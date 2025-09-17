@@ -47,7 +47,6 @@ class ChatRequest(BaseModel):
 
 class PDFChatRequest(BaseModel):
     message: str          # User's question about the PDF
-    api_key: str          # OpenAI API key for authentication
 
 # Define the main chat endpoint that handles POST requests
 @app.post("/api/chat")
@@ -82,16 +81,18 @@ async def chat(request: ChatRequest):
 
 # PDF Upload and Indexing endpoint
 @app.post("/api/upload-pdf")
-async def upload_pdf(file: UploadFile = File(...), api_key: str = Form(...)):
+async def upload_pdf(file: UploadFile = File(...)):
     """Upload and index a PDF file for RAG functionality."""
     global vector_db, chat_model
     
     if not file.filename.lower().endswith('.pdf'):
         raise HTTPException(status_code=400, detail="File must be a PDF")
     
+    # Check if OpenAI API key is set
+    if not os.getenv("OPENAI_API_KEY"):
+        raise HTTPException(status_code=500, detail="OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.")
+    
     try:
-        # Set OpenAI API key
-        os.environ["OPENAI_API_KEY"] = api_key
         
         # Initialize models
         embedding_model = EmbeddingModel()
@@ -145,8 +146,9 @@ async def pdf_chat(request: PDFChatRequest):
         raise HTTPException(status_code=500, detail="Chat model not initialized")
     
     try:
-        # Set OpenAI API key
-        os.environ["OPENAI_API_KEY"] = request.api_key
+        # Check if OpenAI API key is set
+        if not os.getenv("OPENAI_API_KEY"):
+            raise HTTPException(status_code=500, detail="OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.")
         
         # Search for relevant context
         relevant_chunks = vector_db.search_by_text(request.message, k=3, return_as_text=True)
