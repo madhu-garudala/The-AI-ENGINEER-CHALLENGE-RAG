@@ -151,133 +151,67 @@ export default function Home() {
   const isSendDisabled = loading || !inputMessage.trim() || !pdfStatus.pdf_uploaded;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 relative">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-40">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundRepeat: 'repeat'
-        }}></div>
-      </div>
-      
-      <main className="relative z-10 container mx-auto px-4 py-8 flex-1 flex flex-col">
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-6 shadow-lg shadow-blue-500/25">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-          </div>
-          <h1 className="text-6xl md:text-8xl font-black mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             PDF RAG Chat
           </h1>
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Transform your documents into intelligent conversations. Upload any PDF and chat with it using cutting-edge AI technology.
+          <p className="text-lg text-gray-600">
+            Upload a PDF and chat with it using AI-powered retrieval-augmented generation.
           </p>
         </div>
 
-
         {/* PDF Upload Section */}
         {!pdfStatus.pdf_uploaded && (
-          <div className="max-w-3xl mx-auto w-full mb-8">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-              <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl border border-white/20 shadow-xl p-8">
-                <div className="text-center mb-6">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4 shadow-lg">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">Upload Your PDF</h2>
-                  <p className="text-gray-600">Choose a PDF document to start your AI-powered conversation</p>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="relative">
-                    <input
-                      id="pdf-file"
-                      type="file"
-                      accept=".pdf"
-                      onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                    <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer">
-                      {pdfFile ? (
-                        <div className="space-y-2">
-                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                            <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                          </div>
-                          <p className="font-medium text-gray-900">{pdfFile.name}</p>
-                          <p className="text-sm text-gray-500">Ready to upload</p>
-                        </div>
-                      ) : (
-                        <div className="space-y-2">
-                          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto">
-                            <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                          </div>
-                          <p className="font-medium text-gray-900">Click to select PDF</p>
-                          <p className="text-sm text-gray-500">or drag and drop your file here</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <button
-                    className={`w-full inline-flex items-center justify-center gap-3 px-8 py-4 text-lg font-semibold text-white rounded-2xl transition-all duration-300 shadow-lg ${
-                      !pdfFile || uploading
-                        ? 'bg-gray-400 cursor-not-allowed shadow-none'
-                        : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl hover:shadow-blue-500/25 hover:-translate-y-0.5'
-                    }`}
-                    onClick={handleFileUpload}
-                    disabled={!pdfFile || uploading}
-                  >
-                    {uploading ? (
-                      <>
-                        <span className="inline-block h-5 w-5 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                        <span>Processing Document...</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        <span>Upload & Index PDF</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+          <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Upload PDF Document
+            </h2>
+            
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="pdf-file" className="block text-sm font-medium text-gray-700 mb-2">
+                  Select PDF File
+                </label>
+                <input
+                  id="pdf-file"
+                  type="file"
+                  accept=".pdf"
+                  onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
               </div>
+              
+              <button
+                className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
+                  !pdfFile || uploading
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+                onClick={handleFileUpload}
+                disabled={!pdfFile || uploading}
+              >
+                {uploading ? 'Processing...' : 'Upload PDF'}
+              </button>
             </div>
           </div>
         )}
 
         {/* PDF Status */}
         {pdfStatus.pdf_uploaded && (
-          <div className="max-w-3xl mx-auto w-full mb-8">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl blur opacity-20"></div>
-              <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border border-green-200/50 shadow-lg p-6">
-                <div className="flex items-center gap-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Document Ready!</h3>
-                    <p className="text-gray-600">
-                      Your PDF has been successfully indexed with <span className="font-semibold text-green-600">{pdfStatus.chunks_count}</span> text chunks. 
-                      You can now start asking questions about your document.
-                    </p>
-                  </div>
-                </div>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-green-800">
+                  PDF uploaded and indexed ({pdfStatus.chunks_count} chunks)
+                </p>
               </div>
             </div>
           </div>
@@ -285,118 +219,79 @@ export default function Home() {
 
         {/* Chat Interface */}
         {pdfStatus.pdf_uploaded && (
-          <div className="flex-1 flex flex-col max-w-5xl mx-auto w-full">
+          <div className="bg-white rounded-lg shadow-md">
+            {/* Chat Header */}
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Chat with your PDF
+              </h3>
+            </div>
+
             {/* Messages */}
-            <div className="flex-1 relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-10 group-hover:opacity-20 transition duration-1000"></div>
-              <div className="relative bg-white/90 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl overflow-hidden">
-                <div className="p-6 border-b border-gray-100/50 bg-gradient-to-r from-blue-50/50 to-purple-50/50">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                      </svg>
+            <div className="h-96 overflow-y-auto p-6 space-y-4">
+              {messages.length === 0 ? (
+                <div className="text-center text-gray-500 py-8">
+                  <p>Ask me anything about your PDF document!</p>
+                </div>
+              ) : (
+                messages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        message.isUser
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                      <p className={`text-xs mt-1 ${
+                        message.isUser ? 'text-blue-100' : 'text-gray-500'
+                      }`}>
+                        {message.timestamp.toLocaleTimeString()}
+                      </p>
                     </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-gray-900">AI Assistant</h2>
-                      <p className="text-sm text-gray-600">Ask me anything about your document</p>
+                  </div>
+                ))
+              )}
+              
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="bg-gray-100 text-gray-800 max-w-xs lg:max-w-md px-4 py-2 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-400 border-t-transparent"></div>
+                      <span className="text-sm">Thinking...</span>
                     </div>
                   </div>
                 </div>
-                
-                <div className="flex-1 p-6 space-y-6 overflow-y-auto max-h-96 min-h-[400px]">
-                  {messages.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full text-center py-12">
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center mb-4">
-                        <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">Start the Conversation</h3>
-                      <p className="text-gray-600 max-w-md">Ask me anything about your PDF document. I'll provide detailed answers based on the content.</p>
-                    </div>
-                  ) : (
-                    messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.isUser ? 'justify-end' : 'justify-start'} animate-fadeIn`}
-                      >
-                        <div className={`max-w-2xl px-6 py-4 rounded-2xl shadow-lg ${
-                          message.isUser
-                            ? 'bg-gradient-to-br from-blue-600 to-purple-600 text-white'
-                            : 'bg-white border border-gray-200 text-gray-800'
-                        }`}>
-                          <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                          <p className={`text-xs mt-2 ${
-                            message.isUser ? 'text-blue-100' : 'text-gray-500'
-                          }`}>
-                            {message.timestamp.toLocaleTimeString()}
-                          </p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                  
-                  {loading && (
-                    <div className="flex justify-start animate-fadeIn">
-                      <div className="bg-white border border-gray-200 text-gray-800 max-w-2xl px-6 py-4 rounded-2xl shadow-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
-                            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                            <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                          </div>
-                          <span className="text-sm font-medium">AI is thinking...</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div ref={messagesEndRef} />
-                </div>
-              </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
 
             {/* Input */}
-            <div className="mt-6 relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300"></div>
-              <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border border-white/20 shadow-xl p-4">
-                <div className="flex gap-3">
-                  <div className="flex-1 relative">
-                    <input
-                      type="text"
-                      className="w-full p-4 pr-12 text-base text-gray-800 placeholder:text-gray-500 border-0 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-gray-50/50"
-                      placeholder="Ask a question about your PDF document..."
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && !isSendDisabled && sendMessage()}
-                    />
-                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                      <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                    </div>
-                  </div>
-                  <button
-                    className={`inline-flex items-center justify-center gap-2 px-6 py-4 text-base font-semibold text-white rounded-xl transition-all duration-300 shadow-lg ${
-                      isSendDisabled 
-                        ? 'bg-gray-400 cursor-not-allowed shadow-none' 
-                        : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:shadow-xl hover:shadow-blue-500/25 hover:-translate-y-0.5'
-                    }`}
-                    onClick={sendMessage}
-                    disabled={isSendDisabled}
-                  >
-                    {loading ? (
-                      <span className="inline-block h-5 w-5 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                    ) : (
-                      <>
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                        </svg>
-                        <span>Send</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+            <div className="px-6 py-4 border-t border-gray-200">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  className="flex-1 p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Ask a question about your PDF..."
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && !isSendDisabled && sendMessage()}
+                />
+                <button
+                  className={`px-6 py-3 rounded-md font-medium transition-colors ${
+                    isSendDisabled
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
+                  onClick={sendMessage}
+                  disabled={isSendDisabled}
+                >
+                  {loading ? 'Sending...' : 'Send'}
+                </button>
               </div>
             </div>
           </div>
@@ -404,44 +299,27 @@ export default function Home() {
 
         {/* Error Display */}
         {error && (
-          <div className="max-w-3xl mx-auto w-full mt-6">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-r from-red-500 to-pink-600 rounded-2xl blur opacity-20"></div>
-              <div className="relative bg-white/90 backdrop-blur-sm rounded-2xl border border-red-200/50 shadow-lg p-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Oops! Something went wrong</h3>
-                    <p className="text-gray-600">{error}</p>
-                  </div>
-                </div>
+          <div className="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-800">{error}</p>
               </div>
             </div>
           </div>
         )}
-      </main>
+      </div>
 
-      <footer className="relative z-10 py-8 border-t border-white/20 bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <span className="text-sm font-semibold text-gray-700">PDF RAG Chat</span>
-            </div>
-            <p className="text-xs text-gray-500">
-              Built with Next.js, FastAPI, and OpenAI · Powered by AIMakerSpace RAG
-            </p>
-          </div>
+      {/* Footer */}
+      <footer className="mt-12 py-6 border-t border-gray-200">
+        <div className="max-w-4xl mx-auto px-4 text-center">
+          <p className="text-sm text-gray-500">
+            Built with Next.js, FastAPI, and OpenAI · Powered by AIMakerSpace RAG
+          </p>
         </div>
       </footer>
     </div>
