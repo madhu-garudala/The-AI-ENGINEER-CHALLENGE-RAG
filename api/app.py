@@ -196,6 +196,15 @@ async def pdf_status():
         "chunks_count": len(vector_db.vectors) if vector_db else 0
     }
 
+# Reset PDF state (for development/testing)
+@app.delete("/api/reset-pdf")
+async def reset_pdf():
+    """Reset the PDF state to allow uploading a new PDF."""
+    global vector_db, chat_model
+    vector_db = None
+    chat_model = None
+    return {"message": "PDF state reset successfully"}
+
 # Define a health check endpoint to verify API status
 @app.get("/api/health")
 async def health_check():
