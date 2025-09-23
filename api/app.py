@@ -111,28 +111,104 @@ def extract_video_id(url: str) -> str:
     raise ValueError("Invalid YouTube URL format")
 
 def get_youtube_transcript(video_id: str) -> str:
-    """Get transcript from YouTube video."""
+    """Get transcript from YouTube video with multiple language fallbacks."""
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        transcript_list = None
+        
+        # Get available transcripts first
+        try:
+            available_transcripts = YouTubeTranscriptApi.list_transcripts(video_id)
+            
+            # Try to find English transcript first (auto-generated or manual)
+            for transcript in available_transcripts:
+                if transcript.language_code.startswith('en'):
+                    try:
+                        transcript_list = transcript.fetch()
+                        print(f"Successfully retrieved English transcript: {transcript.language}")
+                        break
+                    except Exception as e:
+                        print(f"Failed to fetch English transcript {transcript.language}: {e}")
+                        continue
+            
+            # If no English transcript worked, try any available transcript
+            if not transcript_list:
+                for transcript in available_transcripts:
+                    try:
+                        transcript_list = transcript.fetch()
+                        print(f"Successfully retrieved transcript in: {transcript.language}")
+                        break
+                    except Exception as e:
+                        print(f"Failed to fetch transcript {transcript.language}: {e}")
+                        continue
+                        
+        except Exception as e:
+            print(f"Failed to list transcripts: {e}")
+            # Fallback: try default transcript API
+            try:
+                transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+                print("Successfully retrieved transcript using default method")
+            except Exception as e2:
+                print(f"Default transcript method also failed: {e2}")
+                raise ValueError(f"No transcript available for this video. The video may not have captions enabled, or transcripts may be disabled. Original error: {str(e)}")
+        
+        if not transcript_list:
+            raise ValueError("No transcript could be retrieved for this video")
+            
         transcript_text = " ".join([item['text'] for item in transcript_list])
+        
+        if not transcript_text.strip():
+            raise ValueError("Retrieved transcript is empty")
+            
+        print(f"Successfully extracted transcript with {len(transcript_text)} characters")
         return transcript_text
+        
+    except ValueError:
+        # Re-raise ValueError as is (these are our custom messages)
+        raise
     except Exception as e:
         raise ValueError(f"Could not retrieve transcript: {str(e)}")
 
 def get_youtube_metadata(url: str) -> dict:
-    """Get YouTube video metadata."""
+    """Get YouTube video metadata with fallback handling."""
     try:
-        yt = YouTube(url)
-        return {
-            "title": yt.title,
-            "author": yt.author,
-            "length": yt.length,
-            "views": yt.views,
-            "description": yt.description[:500] + "..." if len(yt.description) > 500 else yt.description,
-            "publish_date": str(yt.publish_date) if yt.publish_date else None
-        }
+        # Try with different user agent strings to avoid detection
+        from pytube import YouTube
+        import requests
+        
+        # First, try with pytube
+        try:
+            yt = YouTube(url)
+            return {
+                "title": yt.title or "Unknown Title",
+                "author": yt.author or "Unknown Author",
+                "length": getattr(yt, 'length', 0) or 0,
+                "views": getattr(yt, 'views', 0) or 0,
+                "description": (yt.description[:500] + "..." if yt.description and len(yt.description) > 500 else yt.description) or "No description available",
+                "publish_date": str(yt.publish_date) if getattr(yt, 'publish_date', None) else None
+            }
+        except Exception as pytube_error:
+            print(f"Pytube failed: {pytube_error}")
+            # Fallback: return basic info from URL
+            video_id = extract_video_id(url)
+            return {
+                "title": f"YouTube Video ({video_id})",
+                "author": "Unknown Author", 
+                "length": 0,
+                "views": 0,
+                "description": "Metadata unavailable - transcript processing will continue",
+                "publish_date": None
+            }
     except Exception as e:
-        raise ValueError(f"Could not retrieve video metadata: {str(e)}")
+        # Final fallback
+        video_id = extract_video_id(url) if url else "unknown"
+        return {
+            "title": f"YouTube Video ({video_id})",
+            "author": "Unknown Author",
+            "length": 0,
+            "views": 0, 
+            "description": "Metadata unavailable",
+            "publish_date": None
+        }
 
 # PDF Upload and Indexing endpoint
 @app.post("/api/upload-pdf")
@@ -261,14 +337,29 @@ async def process_youtube(request: YouTubeRequest):
         embedding_model = EmbeddingModel()
         chat_model = ChatOpenAI(model_name="gpt-4o-mini")
         
-        # Extract video ID and get metadata
+        # Extract video ID
         video_id = extract_video_id(request.url)
-        youtube_video_info = get_youtube_metadata(request.url)
+        
+        # Get transcript first (this is the critical part)
+        transcript = get_youtube_transcript(video_id)
+        
+        # Get metadata (this can fail without breaking the process)
+        try:
+            youtube_video_info = get_youtube_metadata(request.url)
+        except Exception as meta_error:
+            print(f"Metadata retrieval failed: {meta_error}")
+            # Use fallback metadata
+            youtube_video_info = {
+                "title": f"YouTube Video ({video_id})",
+                "author": "Unknown Author",
+                "length": 0,
+                "views": 0,
+                "description": "Metadata unavailable - transcript processing successful",
+                "publish_date": None
+            }
+        
         youtube_video_info["video_id"] = video_id
         youtube_video_info["url"] = request.url
-        
-        # Get transcript
-        transcript = get_youtube_transcript(video_id)
         
         if not transcript.strip():
             raise HTTPException(status_code=400, detail="No transcript available for this video")
@@ -314,9 +405,64 @@ Keep the summary concise but informative."""
         }
         
     except ValueError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))
+        # These are user-friendly error messages with suggestions
+        error_msg = str(ve)
+        if "transcript" in error_msg.lower():
+            error_msg += "\n\n💡 Suggestions:\n• Try a different video with captions/subtitles enabled\n• Educational videos (TED talks, tutorials) often have transcripts\n• Check if the video has captions by looking for the CC button on YouTube\n• Some videos may have region-restricted transcripts"
+        raise HTTPException(status_code=400, detail=error_msg)
     except Exception as e:
+        # Log the full error for debugging
+        print(f"Unexpected error processing YouTube video: {e}")
         raise HTTPException(status_code=500, detail=f"Error processing YouTube video: {str(e)}")
+
+# Test endpoint for debugging YouTube functionality
+@app.post("/api/test-youtube")
+async def test_youtube(request: YouTubeRequest):
+    """Test YouTube functionality with detailed debugging info."""
+    try:
+        video_id = extract_video_id(request.url)
+        
+        result = {
+            "url": request.url,
+            "video_id": video_id,
+            "transcript_status": "not_tested",
+            "metadata_status": "not_tested",
+            "available_transcripts": []
+        }
+        
+        # Test transcript availability
+        try:
+            available_transcripts = YouTubeTranscriptApi.list_transcripts(video_id)
+            result["available_transcripts"] = [
+                {"language": t.language, "language_code": t.language_code, "is_generated": t.is_generated}
+                for t in available_transcripts
+            ]
+            result["transcript_status"] = "available"
+            
+            # Try to actually fetch a transcript
+            try:
+                transcript_text = get_youtube_transcript(video_id)
+                result["transcript_fetch_status"] = "success"
+                result["transcript_length"] = len(transcript_text)
+                result["transcript_preview"] = transcript_text[:200] + "..." if len(transcript_text) > 200 else transcript_text
+            except Exception as fetch_error:
+                result["transcript_fetch_status"] = f"error: {str(fetch_error)}"
+                
+        except Exception as e:
+            result["transcript_status"] = f"error: {str(e)}"
+        
+        # Test metadata
+        try:
+            metadata = get_youtube_metadata(request.url)
+            result["metadata_status"] = "success"
+            result["metadata"] = metadata
+        except Exception as e:
+            result["metadata_status"] = f"error: {str(e)}"
+        
+        return result
+        
+    except Exception as e:
+        return {"error": str(e)}
 
 # YouTube Chat endpoint using RAG
 @app.post("/api/youtube-chat")
