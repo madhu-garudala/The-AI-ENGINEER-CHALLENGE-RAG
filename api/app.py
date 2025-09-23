@@ -89,8 +89,12 @@ async def upload_pdf(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="File must be a PDF")
     
     # Check if OpenAI API key is set
-    if not os.getenv("OPENAI_API_KEY"):
-        raise HTTPException(status_code=500, detail="OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.")
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key or api_key == "test_key":
+        raise HTTPException(
+            status_code=500, 
+            detail="OpenAI API key not configured. Please set OPENAI_API_KEY environment variable with your actual API key from https://platform.openai.com/account/api-keys"
+        )
     
     try:
         
@@ -147,8 +151,12 @@ async def pdf_chat(request: PDFChatRequest):
     
     try:
         # Check if OpenAI API key is set
-        if not os.getenv("OPENAI_API_KEY"):
-            raise HTTPException(status_code=500, detail="OpenAI API key not configured. Please set OPENAI_API_KEY environment variable.")
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key or api_key == "test_key":
+            raise HTTPException(
+                status_code=500, 
+                detail="OpenAI API key not configured. Please set OPENAI_API_KEY environment variable with your actual API key from https://platform.openai.com/account/api-keys"
+            )
         
         # Search for relevant context
         relevant_chunks = vector_db.search_by_text(request.message, k=3, return_as_text=True)
