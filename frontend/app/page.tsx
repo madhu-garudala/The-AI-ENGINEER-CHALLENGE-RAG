@@ -270,14 +270,14 @@ export default function Home() {
               <div className="flex gap-2">
                 <input
                   type="text"
-                  className="flex-1 p-3 text-base text-gray-800 placeholder:text-gray-400 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/60 bg-white"
+                  className="flex-1 p-4 text-lg text-gray-800 placeholder:text-gray-400 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/60 bg-white min-h-[60px]"
                   placeholder="Ask a question about your PDF..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && !isSendDisabled && sendMessage()}
                 />
                 <button
-                  className={`inline-flex items-center gap-2 px-5 py-3 text-sm font-medium text-white rounded-lg transition-colors duration-200 shadow-sm ${
+                  className={`inline-flex items-center gap-2 px-6 py-4 text-base font-medium text-white rounded-lg transition-colors duration-200 shadow-sm ${
                     isSendDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
                   }`}
                   onClick={sendMessage}
