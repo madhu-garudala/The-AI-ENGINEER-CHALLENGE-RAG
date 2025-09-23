@@ -2,34 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Simple, clean animations */
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
+
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+body {
+  @apply antialiased;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}

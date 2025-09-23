@@ -6,13 +6,95 @@
 
 ## <h1 align="center" id="heading"> 👋 Welcome to the AI Engineer Challenge</h1>
 
-## 🤖 Your First Vibe Coding LLM Application (MG - Project)
+## 🤖 PDF RAG Chat Application
+
+A powerful PDF RAG (Retrieval-Augmented Generation) system that allows users to upload PDF documents and chat with them using AI-powered context retrieval.
+
+### 🚀 Features
+
+- **PDF Upload & Processing**: Upload PDF files and extract text using PyPDF2
+- **Vector Database**: Index PDF content using OpenAI embeddings for semantic search
+- **RAG Chat Interface**: Real-time chat with PDF documents using context-aware responses
+- **Streaming Responses**: Live streaming of AI responses for better user experience
+- **Modern UI**: Clean, responsive interface built with Next.js and Tailwind CSS
+
+### 🔧 Setup Instructions
+
+1. **Get Your OpenAI API Key**:
+   - Go to [OpenAI Platform](https://platform.openai.com/account/api-keys)
+   - Create a new API key
+   - Copy the key (it starts with `sk-`)
+
+2. **Set Environment Variables**: 
+   ```bash
+   export OPENAI_API_KEY=sk-your_actual_api_key_here
+   ```
+   
+   **OR** create a `.env` file in the project root:
+   ```bash
+   OPENAI_API_KEY=sk-your_actual_api_key_here
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   # Backend dependencies
+   cd api
+   pip install -r requirements.txt
+   
+   # Frontend dependencies
+   cd ../frontend
+   npm install
+   ```
+
+4. **Run the Application**:
+   
+   **Option 1: Using the startup script (Recommended):**
+   ```bash
+   OPENAI_API_KEY=sk-your_actual_api_key_here ./start_server.sh
+   ```
+   
+   **Option 2: Manual startup:**
+   ```bash
+   # Start backend (Terminal 1)
+   cd api
+   python3 -m uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+   
+   # Start frontend (Terminal 2)
+   cd frontend
+   npm run dev
+   ```
+
+5. **Access the Application**:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+   - API Documentation: http://localhost:8000/docs
+
+### ⚠️ Important Notes
+
+- **You MUST set a valid OpenAI API key** - the application will not work with test keys
+- The API key should start with `sk-` and be from your OpenAI account
+- Make sure you have sufficient OpenAI credits for API usage
+- The application will show clear error messages if the API key is invalid
+
+### 📋 Usage
+
+1. Upload a PDF document using the file input
+2. Wait for the document to be indexed (you'll see a success message)
+3. Start asking questions about the PDF content
+4. The AI will provide context-aware answers based on the document
+
+### 🛠️ Technical Stack
+
+- **Backend**: FastAPI with streaming responses
+- **Frontend**: Next.js with TypeScript
+- **RAG Engine**: AIMakerSpace library
+- **Vector Search**: Cosine similarity with configurable parameters
+- **Text Processing**: PyPDF2 + CharacterTextSplitter
+- **AI Integration**: OpenAI GPT-4o-mini + text-embedding-3-small
 
 > If you are a novice, and need a bit more help to get your dev environment off the ground, check out this [Setup Guide](docs/GIT_SETUP.md). This guide will walk you through the 'git' setup you need to get started.
 
 > For additional context on LLM development environments and API key setup, you can also check out our [Interactive Dev Environment for LLM Development](https://github.com/AI-Maker-Space/Interactive-Dev-Environment-for-AI-Engineers).
-
-In this repository, we'll walk you through the steps to create a LLM (Large Language Model) powered application with a vibe-coded frontend!
 
 Are you ready? Let's get started!
 
