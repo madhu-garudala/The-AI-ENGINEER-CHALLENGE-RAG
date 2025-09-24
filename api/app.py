@@ -433,6 +433,9 @@ Keep the summary concise but informative."""
         if "transcript" in error_msg.lower():
             error_msg += "\n\n💡 Suggestions:\n• Try a different video with captions/subtitles enabled\n• Educational videos (TED talks, tutorials) often have transcripts\n• Check if the video has captions by looking for the CC button on YouTube\n• Some videos may have region-restricted transcripts"
         raise HTTPException(status_code=400, detail=error_msg)
+    except HTTPException:
+        # Re-raise HTTPException as-is (these are our intentional error responses)
+        raise
     except Exception as e:
         # Log the full error for debugging
         print(f"Unexpected error processing YouTube video: {e}")
