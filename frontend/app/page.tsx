@@ -276,81 +276,52 @@ I've indexed ${data.chunks_count} text chunks from the transcript. You can now a
 
           {/* Upload Section */}
           {!pdfStatus.pdf_uploaded && !youtubeStatus.youtube_processed && (
-            <div className="max-w-3xl mx-auto">
-              <div className="bg-white overflow-hidden shadow rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                    {/* PDF Upload */}
+            <div className="max-w-2xl mx-auto space-y-6">
+              {/* PDF Upload */}
+              <div className="bg-white p-6 rounded-lg border">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Upload PDF Document</h3>
+                <div className="space-y-4">
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+                    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  />
+                  {pdfFile && (
                     <div>
-                      <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                        Upload PDF Document
-                      </h3>
-                      <div className="mt-1 flex justify-center px-4 pt-3 pb-4 border-2 border-gray-300 border-dashed rounded-md">
-                        <div className="space-y-1 text-center">
-                          <svg className="mx-auto h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                          </svg>
-                          <div className="flex text-sm text-gray-600">
-                            <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                              <span>Upload a file</span>
-                              <input
-                                id="file-upload"
-                                name="file-upload"
-                                type="file"
-                                accept=".pdf"
-                                className="sr-only"
-                                onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-                              />
-                            </label>
-                            <p className="pl-1">or drag and drop</p>
-                          </div>
-                          <p className="text-xs text-gray-500">PDF files only</p>
-                          {pdfFile && (
-                            <p className="text-sm text-gray-900 mt-2">
-                              Selected: {pdfFile.name}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      {pdfFile && (
-                        <button
-                          onClick={handleFileUpload}
-                          disabled={uploading}
-                          className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                        >
-                          {uploading ? 'Uploading...' : 'Upload PDF'}
-                        </button>
-                      )}
+                      <p className="text-sm text-gray-600 mb-2">Selected: {pdfFile.name}</p>
+                      <button
+                        onClick={handleFileUpload}
+                        disabled={uploading}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                      >
+                        {uploading ? 'Uploading...' : 'Upload PDF'}
+                      </button>
                     </div>
+                  )}
+                </div>
+              </div>
 
-                    {/* YouTube URL */}
-                    <div>
-                      <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-                        Process YouTube Video
-                      </h3>
-                      <div className="mt-1">
-                        <input
-                          type="url"
-                          placeholder="https://www.youtube.com/watch?v=..."
-                          value={youtubeUrl}
-                          onChange={(e) => setYoutubeUrl(e.target.value)}
-                          className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                        />
-                      </div>
-                      <p className="mt-2 text-sm text-gray-500">
-                        Enter a YouTube URL to analyze the video content
-                      </p>
-                      {youtubeUrl && (
-                        <button
-                          onClick={handleYouTubeProcess}
-                          disabled={processingYoutube}
-                          className="mt-4 w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50"
-                        >
-                          {processingYoutube ? 'Processing...' : 'Process Video'}
-                        </button>
-                      )}
-                    </div>
-                  </div>
+              {/* YouTube URL */}
+              <div className="bg-white p-6 rounded-lg border">
+                <h3 className="text-lg font-medium text-gray-900 mb-4">Process YouTube Video</h3>
+                <div className="space-y-4">
+                  <input
+                    type="url"
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    value={youtubeUrl}
+                    onChange={(e) => setYoutubeUrl(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  {youtubeUrl && (
+                    <button
+                      onClick={handleYouTubeProcess}
+                      disabled={processingYoutube}
+                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 disabled:opacity-50"
+                    >
+                      {processingYoutube ? 'Processing...' : 'Process Video'}
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
