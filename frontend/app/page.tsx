@@ -26,6 +26,9 @@ interface Message {
 }
 
 export default function Home() {
+  // API base URL - works for both development and production
+  const API_BASE_URL = process.env.NODE_ENV === 'production' ? '' : 'http://localhost:8000';
+  
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [pdfStatus, setPdfStatus] = useState<PDFStatus>({ pdf_uploaded: false, chunks_count: 0 });
   const [youtubeUrl, setYoutubeUrl] = useState('');
@@ -57,7 +60,7 @@ export default function Home() {
 
   const checkPDFStatus = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/pdf-status');
+      const response = await fetch(`${API_BASE_URL}/api/pdf-status`);
       const data = await response.json();
       setPdfStatus(data);
       if (data.pdf_uploaded) {
@@ -70,7 +73,7 @@ export default function Home() {
 
   const checkYouTubeStatus = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/youtube-status');
+      const response = await fetch(`${API_BASE_URL}/api/youtube-status`);
       const data = await response.json();
       setYoutubeStatus(data);
       if (data.youtube_processed) {
@@ -94,7 +97,7 @@ export default function Home() {
       const formData = new FormData();
       formData.append('file', pdfFile);
 
-      const response = await fetch('http://localhost:8000/api/upload-pdf', {
+      const response = await fetch(`${API_BASE_URL}/api/upload-pdf`, {
         method: 'POST',
         body: formData,
       });
@@ -126,7 +129,7 @@ export default function Home() {
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8000/api/process-youtube', {
+      const response = await fetch(`${API_BASE_URL}/api/process-youtube`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -175,8 +178,8 @@ export default function Home() {
     try {
       // Choose endpoint based on content type
       const endpoint = contentType === 'youtube' ? 
-        'http://localhost:8000/api/youtube-chat' : 
-        'http://localhost:8000/api/pdf-chat';
+        `${API_BASE_URL}/api/youtube-chat` : 
+        `${API_BASE_URL}/api/pdf-chat`;
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -233,7 +236,7 @@ export default function Home() {
     
     try {
       // Reset both PDF and YouTube states
-      await fetch('http://localhost:8000/api/reset-all', { method: 'DELETE' });
+      await fetch(`${API_BASE_URL}/api/reset-all`, { method: 'DELETE' });
       
       // Reset frontend state
       setPdfStatus({ pdf_uploaded: false, chunks_count: 0 });
