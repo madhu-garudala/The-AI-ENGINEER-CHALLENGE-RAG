@@ -41,6 +41,7 @@ export default function Home() {
   const [processingYoutube, setProcessingYoutube] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [contentType, setContentType] = useState<'pdf' | 'youtube' | null>(null);
+  const [resetting, setResetting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -106,6 +107,7 @@ export default function Home() {
 
       setPdfStatus({ pdf_uploaded: true, chunks_count: data.chunks_count });
       setContentType('pdf');
+      setError(null); // Clear any previous errors
     } catch (err) {
       console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -146,8 +148,7 @@ export default function Home() {
         video_info: data.video_info
       });
       setContentType('youtube');
-      
-      // Video processed successfully - status will show in the status message
+      setError(null); // Clear any previous errors
     } catch (err) {
       console.error('YouTube processing error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -226,6 +227,30 @@ export default function Home() {
     }
   };
 
+  const handleReset = async () => {
+    setResetting(true);
+    setError(null);
+    
+    try {
+      // Reset both PDF and YouTube states
+      await fetch('http://localhost:8000/api/reset-all', { method: 'DELETE' });
+      
+      // Reset frontend state
+      setPdfStatus({ pdf_uploaded: false, chunks_count: 0 });
+      setYoutubeStatus({ youtube_processed: false, chunks_count: 0, video_info: null });
+      setContentType(null);
+      setMessages([]);
+      setPdfFile(null);
+      setYoutubeUrl('');
+      setInputMessage('');
+    } catch (err) {
+      console.error('Reset error:', err);
+      setError('Failed to reset. Please refresh the page.');
+    } finally {
+      setResetting(false);
+    }
+  };
+
   const isSendDisabled = loading || !inputMessage.trim() || (!pdfStatus.pdf_uploaded && !youtubeStatus.youtube_processed);
 
   return (
@@ -239,9 +264,20 @@ export default function Home() {
                 <h1 className="text-2xl font-bold text-gray-900">AI Content Chat</h1>
               </div>
             </div>
-            <nav className="hidden md:flex space-x-8">
-              <a href="#" className="text-gray-500 hover:text-gray-900">About</a>
-              <a href="#" className="text-gray-500 hover:text-gray-900">Help</a>
+            <nav className="flex items-center space-x-4">
+              <div className="hidden md:flex space-x-8">
+                <a href="#" className="text-gray-500 hover:text-gray-900">About</a>
+                <a href="#" className="text-gray-500 hover:text-gray-900">Help</a>
+              </div>
+              {(pdfStatus.pdf_uploaded || youtubeStatus.youtube_processed) && (
+                <button
+                  onClick={handleReset}
+                  disabled={resetting}
+                  className="px-3 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded border disabled:opacity-50"
+                >
+                  {resetting ? 'Resetting...' : 'New Upload'}
+                </button>
+              )}
             </nav>
           </div>
         </div>
@@ -322,6 +358,12 @@ export default function Home() {
                   <h3 className="text-lg leading-6 font-medium text-gray-900">
                     Chat with your {contentType === 'youtube' ? 'video' : 'document'}
                   </h3>
+                  <p className="mt-1 text-sm text-gray-500">
+                    {contentType === 'youtube' && youtubeStatus.video_info?.title && 
+                      `Video: ${youtubeStatus.video_info.title}`}
+                    {contentType === 'pdf' && pdfStatus.chunks_count > 0 && 
+                      `Document ready • ${pdfStatus.chunks_count} sections indexed`}
+                  </p>
                 </div>
                 <div className="border-t border-gray-200">
                   <div className="h-64 overflow-y-auto p-4 space-y-4">
