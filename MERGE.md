@@ -1,192 +1,185 @@
-# PDF RAG System - Merge Instructions
+# 🚀 AI Content Chat - Merge Instructions
 
-This document provides instructions for merging the PDF RAG functionality back to the main branch.
+## 📋 **Project Overview**
+This repository contains a complete **AI Content Chat Application** built with:
+- **Backend**: FastAPI with RAG functionality using AIMakerSpace library
+- **Frontend**: Next.js with modern, responsive UI
+- **Features**: PDF upload, YouTube video processing, and AI-powered chat
 
-## Overview
+## 🎯 **Key Features Implemented**
+- ✅ PDF document upload and indexing
+- ✅ YouTube video transcript processing (infrastructure ready)
+- ✅ RAG-based question answering using OpenAI GPT-4o-mini
+- ✅ Modern, responsive UI with Tailwind CSS
+- ✅ Environment variable management for API keys
+- ✅ Comprehensive error handling and user feedback
+- ✅ Streaming chat responses
 
-The feature branch `feature/pdf-rag-system` implements a complete PDF RAG (Retrieval-Augmented Generation) system that allows users to:
-- Upload PDF documents
-- Index PDF content using vector embeddings
-- Chat with PDF documents using AI-powered context retrieval
-- Stream responses in real-time
+## 🔧 **Technical Stack**
+- **Backend**: FastAPI, Python 3.9+, OpenAI API, AIMakerSpace
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **AI/ML**: OpenAI GPT-4o-mini, OpenAI Embeddings, Vector Database
+- **Document Processing**: PyPDF2, YouTube Transcript API
 
-## Changes Made
-
-### Backend (FastAPI)
-- **File**: `api/app.py`
-  - Added PDF upload endpoint (`/api/upload-pdf`)
-  - Added PDF chat endpoint (`/api/pdf-chat`) with streaming responses
-  - Added PDF status endpoint (`/api/pdf-status`)
-  - Integrated AIMakerSpace library for RAG functionality
-  - Added proper error handling and validation
-
-- **File**: `api/requirements.txt`
-  - Added PyPDF2 for PDF text extraction
-  - Added numpy for vector operations
-  - Added python-dotenv for environment management
-
-### Frontend (Next.js)
-- **File**: `frontend/app/page.tsx`
-  - Completely redesigned UI for PDF RAG chat
-  - Added PDF upload interface
-  - Added real-time chat interface with streaming responses
-  - Added API key input for OpenAI authentication
-  - Added status indicators and error handling
-
-### AIMakerSpace Library
-- **New Files**: Complete AIMakerSpace library implementation
-  - `aimakerspace/vectordatabase.py` - Vector database with cosine similarity search
-  - `aimakerspace/openai_utils/embedding.py` - OpenAI embeddings integration
-  - `aimakerspace/openai_utils/chatmodel.py` - OpenAI chat completions wrapper
-  - `aimakerspace/text_utils.py` - PDF loading and text splitting utilities
-
-## Merge Instructions
-
-### Option 1: GitHub CLI (Recommended)
-
-```bash
-# Switch to main branch
-git checkout main
-
-# Merge the feature branch
-git merge feature/pdf-rag-system
-
-# Push changes to remote
-git push origin main
-
-# Delete the feature branch (optional)
-git branch -d feature/pdf-rag-system
-git push origin --delete feature/pdf-rag-system
+## 📁 **Project Structure**
+```
+The-AI-Engineer-Challenge/
+├── api/                    # FastAPI backend
+│   ├── app.py             # Main API endpoints
+│   ├── requirements.txt   # Python dependencies
+│   └── README.md         # API documentation
+├── frontend/              # Next.js frontend
+│   ├── app/              # Next.js app directory
+│   ├── package.json      # Node.js dependencies
+│   └── README.md         # Frontend documentation
+├── aimakerspace/         # RAG library
+│   ├── vectordatabase.py # Vector database implementation
+│   ├── openai_utils/     # OpenAI utilities
+│   └── text_utils.py     # Text processing utilities
+└── README.md             # Main project documentation
 ```
 
-### Option 2: GitHub Pull Request
+## 🚀 **Quick Start**
 
-1. **Create Pull Request**:
-   - Go to the GitHub repository
-   - Click "Compare & pull request" for the `feature/pdf-rag-system` branch
-   - Add title: "Implement PDF RAG System with Upload and Chat Functionality"
-   - Add description:
-     ```
-     This PR implements a complete PDF RAG system that allows users to upload PDF documents and chat with them using AI-powered retrieval-augmented generation.
-     
-     ## Features
-     - PDF upload and text extraction using PyPDF2
-     - Vector database indexing using AIMakerSpace library
-     - Real-time chat interface with streaming responses
-     - Context-aware responses based on PDF content
-     - Modern, responsive UI design
-     
-     ## Technical Details
-     - Backend: FastAPI with streaming responses
-     - Frontend: Next.js with TypeScript
-     - RAG: AIMakerSpace library with OpenAI embeddings
-     - Vector Search: Cosine similarity with configurable chunk size
-     ```
+### Prerequisites
+- Python 3.9+
+- Node.js 18+
+- OpenAI API Key
 
-2. **Review and Merge**:
-   - Review the changes in the GitHub interface
-   - Ensure all tests pass (if applicable)
-   - Merge the pull request
+### Setup Instructions
 
-## Post-Merge Setup
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/madhu-garudala/The-AI-ENGINEER-CHALLENGE-RAG.git
+   cd The-AI-ENGINEER-CHALLENGE-RAG
+   ```
 
-### 1. Install Dependencies
+2. **Set up OpenAI API Key**
+   ```bash
+   export OPENAI_API_KEY="your-openai-api-key-here"
+   ```
 
+3. **Start Backend Server**
+   ```bash
+   cd api
+   pip install -r requirements.txt
+   python -m uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+   ```
+
+4. **Start Frontend Server**
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+5. **Access Application**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8000
+
+## 🔄 **Merge Options**
+
+### Option 1: GitHub Pull Request (Recommended)
 ```bash
-# Backend dependencies
-cd api
-pip install -r requirements.txt
+# Create a new feature branch
+git checkout -b feature/ai-content-chat
 
-# Frontend dependencies
-cd ../frontend
-npm install
+# Push to your repository
+git push origin feature/ai-content-chat
+
+# Create Pull Request on GitHub:
+# 1. Go to https://github.com/madhu-garudala/The-AI-ENGINEER-CHALLENGE-RAG
+# 2. Click "Compare & pull request"
+# 3. Add description of changes
+# 4. Click "Create pull request"
+# 5. Review and merge when ready
 ```
 
-### 2. Environment Setup
-
-Create a `.env` file in the project root with your OpenAI API key:
+### Option 2: GitHub CLI (Fast)
 ```bash
-OPENAI_API_KEY=your_openai_api_key_here
+# Install GitHub CLI if not already installed
+# brew install gh  # macOS
+# winget install GitHub.cli  # Windows
+
+# Authenticate with GitHub
+gh auth login
+
+# Create and push feature branch
+git checkout -b feature/ai-content-chat
+git push origin feature/ai-content-chat
+
+# Create pull request
+gh pr create --title "AI Content Chat Application" --body "Complete RAG system with PDF and YouTube support"
+
+# Merge pull request
+gh pr merge --merge
 ```
 
-### 3. Run the Application
+## 📊 **Current Status**
 
+### ✅ Working Features
+- **PDF Processing**: Upload, index, and chat with PDF documents
+- **Modern UI**: Responsive design with loading states and error handling
+- **API Security**: Environment variable management for API keys
+- **Error Handling**: Comprehensive error messages and user feedback
+
+### ⚠️ Known Issues
+- **YouTube Transcript API**: Currently experiencing rate limiting (429 errors) from YouTube's side
+- **Infrastructure Ready**: YouTube processing will work once API restrictions are lifted
+
+## 🧪 **Testing the Application**
+
+### PDF Functionality
+1. Upload any PDF document
+2. Wait for processing completion
+3. Ask questions like:
+   - "What are the main points?"
+   - "Summarize this document"
+   - "What does it say about [topic]?"
+
+### YouTube Functionality (When Available)
+1. Enter a YouTube URL
+2. Wait for transcript processing
+3. Chat about the video content
+
+## 🔐 **Environment Variables**
 ```bash
-# Start backend (Terminal 1)
-cd api
-python3 -m uvicorn app:app --host 0.0.0.0 --port 8000 --reload
+# Required
+OPENAI_API_KEY=your-openai-api-key-here
 
-# Start frontend (Terminal 2)
-cd frontend
-npm run dev
+# Optional (for production)
+NODE_ENV=production
+API_URL=https://your-api-domain.com
 ```
 
-### 4. Access the Application
+## 📝 **API Endpoints**
 
-- Frontend: https://localhost:3000 (HTTPS enabled)
-- Backend API: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
+### Core Endpoints
+- `GET /api/health` - Health check
+- `POST /api/upload-pdf` - Upload and index PDF
+- `POST /api/pdf-chat` - Chat with PDF content
+- `GET /api/pdf-status` - Check PDF upload status
 
-## Testing the System
+### YouTube Endpoints
+- `POST /api/process-youtube` - Process YouTube video
+- `POST /api/youtube-chat` - Chat with video content
+- `GET /api/youtube-status` - Check video processing status
 
-1. **Upload a PDF**:
-   - Enter your OpenAI API key
-   - Select a PDF file
-   - Click "Upload PDF"
-   - Wait for indexing to complete
+### Utility Endpoints
+- `DELETE /api/reset-pdf` - Reset PDF state
+- `DELETE /api/reset-youtube` - Reset YouTube state
+- `DELETE /api/reset-all` - Reset all content
 
-2. **Chat with PDF**:
-   - Ask questions about the PDF content
-   - The system will retrieve relevant context and provide answers
-   - Responses are streamed in real-time
+## 🎉 **Deployment Ready**
+The application is ready for deployment on platforms like:
+- **Vercel** (Frontend + API)
+- **Railway** (Full-stack)
+- **Docker** (Containerized deployment)
+- **AWS/GCP/Azure** (Cloud deployment)
 
-## API Endpoints
+## 📞 **Support**
+For questions or issues, please create an issue in the GitHub repository.
 
-- `POST /api/upload-pdf` - Upload and index a PDF file
-- `POST /api/pdf-chat` - Chat with the uploaded PDF
-- `GET /api/pdf-status` - Check if PDF is uploaded
-- `GET /api/health` - Health check endpoint
+---
 
-## Configuration
-
-The system can be configured by modifying these parameters in `api/app.py`:
-- `chunk_size`: Size of text chunks for indexing (default: 1000)
-- `chunk_overlap`: Overlap between chunks (default: 200)
-- `k`: Number of relevant chunks to retrieve (default: 3)
-- `model_name`: OpenAI model to use (default: "gpt-4o-mini")
-
-## Troubleshooting
-
-1. **PDF Upload Issues**:
-   - Ensure the file is a valid PDF
-   - Check that the PDF contains extractable text
-   - Verify OpenAI API key is valid
-
-2. **Chat Issues**:
-   - Ensure a PDF has been uploaded first
-   - Check that the API key is correct
-   - Verify the backend is running on port 8000
-
-3. **Frontend Issues**:
-   - Check that the frontend is running on port 3000
-   - Verify CORS settings in the backend
-   - Check browser console for errors
-
-## Security Notes
-
-- API keys are handled securely and not stored
-- PDF files are processed temporarily and cleaned up
-- CORS is configured for development (should be restricted in production)
-- All user inputs are validated and sanitized
-
-## Future Enhancements
-
-- Support for multiple PDF documents
-- Persistent vector database storage
-- User authentication and session management
-- PDF preview functionality
-- Export chat conversations
-- Advanced search and filtering options
-
-
-
+**Built with ❤️ using AI-powered development tools**
