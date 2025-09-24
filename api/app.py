@@ -347,14 +347,24 @@ async def process_youtube(request: YouTubeRequest):
         # Extract video ID
         video_id = extract_video_id(request.url)
         
-        # Try to get transcript first, but use demo content if it fails
+        # Try to get transcript
         transcript = None
         try:
             transcript = get_youtube_transcript(video_id)
         except Exception as transcript_error:
             print(f"Transcript extraction failed: {transcript_error}")
-            # Use demo transcript for demonstration purposes
-            transcript = get_demo_transcript_for_video(video_id)
+            # Check if it's a rate limiting error
+            error_msg = str(transcript_error)
+            if "429" in error_msg or "Too Many Requests" in error_msg:
+                raise HTTPException(
+                    status_code=429,
+                    detail="YouTube is currently rate limiting requests. Please try again in a few minutes, or try a different video. Educational videos from channels like TED, Khan Academy, or university lectures often work well."
+                )
+            else:
+                raise HTTPException(
+                    status_code=422, 
+                    detail=f"Could not retrieve transcript for this video. This video may not have captions/transcripts available. Please try a different video with available transcripts. Suggested videos: educational content, TED talks, or university lectures. Error: {str(transcript_error)}"
+                )
         
         # Get metadata (this can fail without breaking the process)
         try:
