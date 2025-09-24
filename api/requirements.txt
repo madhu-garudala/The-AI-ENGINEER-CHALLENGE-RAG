@@ -1,9 +1,7 @@
-fastapi
-uvicorn
-openai
-pydantic
-python-multipart
-PyPDF2
-python-dotenv
-youtube-transcript-api
-pytube
+fastapi>=0.104.0
+openai>=1.0.0
+pydantic>=2.0.0
+python-multipart>=0.0.6
+PyPDF2>=3.0.0
+python-dotenv>=1.0.0
+youtube-transcript-api>=0.6.0

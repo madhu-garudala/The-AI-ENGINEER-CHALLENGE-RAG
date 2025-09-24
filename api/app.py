@@ -16,7 +16,14 @@ from urllib.parse import urlparse, parse_qs
 
 # Import YouTube functionality
 from youtube_transcript_api import YouTubeTranscriptApi
-from pytube import YouTube
+
+# Try to import pytube, but make it optional for Vercel deployment
+try:
+    from pytube import YouTube
+    PYTUBE_AVAILABLE = True
+except ImportError:
+    PYTUBE_AVAILABLE = False
+    YouTube = None
 
 # Import AIMakerSpace components for RAG functionality
 import sys
@@ -171,9 +178,9 @@ def get_youtube_transcript(video_id: str) -> str:
 def get_youtube_metadata(url: str) -> dict:
     """Get YouTube video metadata with fallback handling."""
     try:
-        # Try with different user agent strings to avoid detection
-        from pytube import YouTube
-        import requests
+        # Check if pytube is available
+        if not PYTUBE_AVAILABLE or not YouTube:
+            raise ImportError("pytube not available")
         
         # First, try with pytube
         try:
