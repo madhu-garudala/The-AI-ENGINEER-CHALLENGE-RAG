@@ -105,12 +105,7 @@ export default function Home() {
       }
 
       setPdfStatus({ pdf_uploaded: true, chunks_count: data.chunks_count });
-      setMessages([{
-        id: '1',
-        content: `PDF "${pdfFile.name}" uploaded successfully! I've indexed ${data.chunks_count} text chunks. You can now ask me questions about the document.`,
-        isUser: false,
-        timestamp: new Date()
-      }]);
+      setContentType('pdf');
     } catch (err) {
       console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -152,17 +147,7 @@ export default function Home() {
       });
       setContentType('youtube');
       
-      setMessages([{
-        id: '1',
-        content: `YouTube video "${data.video_info.title}" processed successfully! 
-
-📊 **Video Summary:**
-${data.summary}
-
-I've indexed ${data.chunks_count} text chunks from the transcript. You can now ask me questions about the video content.`,
-        isUser: false,
-        timestamp: new Date()
-      }]);
+      // Video processed successfully - status will show in the status message
     } catch (err) {
       console.error('YouTube processing error:', err);
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -329,39 +314,21 @@ I've indexed ${data.chunks_count} text chunks from the transcript. You can now a
 
           {/* Status Messages */}
           {pdfStatus.pdf_uploaded && (
-            <div className="max-w-3xl mx-auto mb-6">
-              <div className="bg-green-50 border border-green-200 rounded-md p-4">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-green-800">
-                      PDF uploaded successfully! Indexed {pdfStatus.chunks_count} text chunks.
-                    </p>
-                  </div>
-                </div>
+            <div className="max-w-2xl mx-auto mb-6">
+              <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                <p className="text-sm text-green-800">
+                  ✅ PDF uploaded successfully! Indexed {pdfStatus.chunks_count} text chunks.
+                </p>
               </div>
             </div>
           )}
 
           {youtubeStatus.youtube_processed && youtubeStatus.video_info && (
-            <div className="max-w-3xl mx-auto mb-6">
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                <div className="flex">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-blue-800">
-                      Video "{youtubeStatus.video_info.title}" processed! Indexed {youtubeStatus.chunks_count} segments.
-                    </p>
-                  </div>
-                </div>
+            <div className="max-w-2xl mx-auto mb-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+                <p className="text-sm text-blue-800">
+                  ✅ Video "{youtubeStatus.video_info.title}" processed! Indexed {youtubeStatus.chunks_count} segments.
+                </p>
               </div>
             </div>
           )}
