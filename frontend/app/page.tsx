@@ -312,26 +312,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* Status Messages */}
-          {pdfStatus.pdf_uploaded && (
-            <div className="max-w-2xl mx-auto mb-6">
-              <div className="bg-green-50 border border-green-200 rounded-md p-3">
-                <p className="text-sm text-green-800">
-                  ✅ PDF uploaded successfully! Indexed {pdfStatus.chunks_count} text chunks.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {youtubeStatus.youtube_processed && youtubeStatus.video_info && (
-            <div className="max-w-2xl mx-auto mb-6">
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                <p className="text-sm text-blue-800">
-                  ✅ Video "{youtubeStatus.video_info.title}" processed! Indexed {youtubeStatus.chunks_count} segments.
-                </p>
-              </div>
-            </div>
-          )}
+          {/* Status Messages - Removed to keep interface clean */}
 
           {/* Chat Interface */}
           {(pdfStatus.pdf_uploaded || youtubeStatus.youtube_processed) && (
